@@ -8,6 +8,39 @@ import sys
 # Initialize Pygame
 pygame.init()
 
+class Cactus():
+
+  def __init__(self):
+    self.image0 = pygame.image.load("sprites/cacti-small.png")
+    self.image0 = pygame.image.load("sprites/cacti-big.png")
+    self.width0 = 45
+    self.width1 = 65
+    self.height = 45
+
+    self.image0 = pygame.transform.scale(self.image0, (self.width0, self.height))
+    self.image1 = pygame.transform.scale(self.image1, (self.width1, self.height))
+
+    self.is_cactus = True
+    self.is_ptera = False
+
+    self.image, self.width = random.choice([[self.image0, self.width0], [self.image1, self.width1]])
+
+    self.x = random.randint(720, 1000)
+    self.y = 175
+    self.speed = 4
+
+    self.hitbox = pygame.Rect(self.x, self.y, self.width, self.height)
+
+  def update(self):
+    self.x -= self.speed
+    self.hitbox = pygame.Rect(self.x, self.y, self.width, self.height)
+
+  def draw(self, screen):
+    screen.blit(self.image, (self.x, self.y))
+
+
+
+
 class Ground():
 
   # Configuring the attributes of the ground object
@@ -98,6 +131,9 @@ def game():
   cloud = Cloud()
   cloud.draw(screen)
   cloud.update()
+
+  # Creating obstacles using obstacles class
+  obstacles = [Cactus()]
 
   # Update the display screen of whole game
   pygame.display.update()
