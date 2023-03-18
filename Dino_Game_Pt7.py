@@ -8,6 +8,45 @@ import sys
 # Initialize Pygame
 pygame.init()
 
+class Ptera():
+
+  def __init__(self):
+    self.width, self.height = 50, 40
+    self.im1 = pygame.image.load("sprites/ptera1.png")
+    self.im2 = pygame.image.load("sprites/ptera2.png")
+
+    self.im1 = pygame.transform.scale(self.im1, (self.width, self.height))
+    self.im2 = pygame.transform.scale(self.im2, (self.width, self.height))
+
+    self.flaps = [self.im1, self.im2]
+
+    self.altitudes = [175, 150, 110]
+    self.x = random.randint(750, 1000)
+    self.y = random.choice(self.altitudes)
+
+    self.speed = 5
+    self.count = 0
+    self.is_ptera = True
+    self.is_cactus = False
+
+    self.hitbox = (self.x, self.y + 10, self.width, self.height - 12)
+
+  def update(self):
+    self.image = self.flaps(int(self.count) % 2 )
+    self.count += 0.1
+
+    self.x -= self.speed
+
+    if self.x < 50:
+      self.allowed = True
+
+    self.hitbox = pygame.Rect(self.x, self.y + 10, self.width, self.height - 10)
+
+  def draw(self, screen):
+    screen.blit(self.image, (self.x, self.y))
+    # pygame.draw.rect(screen, (255, 0, 0), self.hitbox, 2)
+
+
 class Cactus():
 
   def __init__(self):
@@ -37,8 +76,6 @@ class Cactus():
 
   def draw(self, screen):
     screen.blit(self.image, (self.x, self.y))
-
-
 
 
 class Ground():
@@ -71,6 +108,7 @@ class Ground():
     if self.image2_x + self.ground_length < 0:
       self.image2_x = self.image1_x + self.ground_length
 
+
 class Cloud():
 
   # Configuring the attributes of the cloud object
@@ -94,6 +132,7 @@ class Cloud():
   # Draw the cloud object on screen
   def draw(self, screen):
     screen.blit(self.image, (self.x, self.y))
+
 
 # Define the game function
 def game():
