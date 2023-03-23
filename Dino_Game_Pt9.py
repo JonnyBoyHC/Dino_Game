@@ -44,7 +44,7 @@ class Dino():
     self.runImgs = [self.runImg1, self.runImg2]
     self.duckImgs = [self.duck1, self.duck2]
 
-    self.jump_sound = pygame.mixer.Sound("jump.wav")
+    self.jump_sound = pygame.mixer.Sound("./sounds/jump.wav")
     self.count = 0
     self.jumping = False
 
@@ -67,6 +67,22 @@ class Dino():
       self.t = 0
       self.up = 7
       self.jumping = False
+
+    if self.is_ducking:
+      self.hitbox = pygame.Rect(self.x + 5, self.y + 20, self.WIDTH + 12, self.HEIGHT - 20)
+      self.image = self.duckImgs[self.count % 2]
+      self.count += 0.2
+    elif self.jumping:
+      self.hitbox = pygame.Rect(self.x + 5, self.y, self.WIDTH - 15, self.HEIGHT - 5)
+      self.image = self.Img
+    else:
+      self.hitbox = pygame.Rect(self.x + 5, self.y, self.WIDTH - 17, self.HEIGHT - 5)
+      self.image = self.runImg1(self.count % 2)
+      self.count += 0.15
+
+  def draw(self, screen):
+    screen.blit(self.image, (self.x, self.y))
+    pygame.draw.rect(screen, (255, 0, 0), self.hitbox, 2)
 
 class Ptera():
 
@@ -207,8 +223,8 @@ def game():
   font = pygame.font.Font("freesansbold.ttf", 20)
 
   # Load game sounds (not used in this example)
-  check_point = pygame.mixer.Sound("checkPoint.wav")
-  death_sound = pygame.mixer.Sound("die.mp3")
+  check_point = pygame.mixer.Sound("./sounds/checkPoint.wav")
+  death_sound = pygame.mixer.Sound("./sounds/die.mp3")
 
   # Load game images and set game icon and caption
   dino_icon = pygame.image.load("sprites/dino_.png")
