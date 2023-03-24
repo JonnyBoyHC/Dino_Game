@@ -77,7 +77,7 @@ class Dino():
       self.image = self.Img
     else:
       self.hitbox = pygame.Rect(self.x + 5, self.y, self.WIDTH - 17, self.HEIGHT - 5)
-      self.image = self.runImg1(self.count % 2)
+      self.image = self.runImgs[int(self.count) % 2] # type: ignore
       self.count += 0.15
 
   def draw(self, screen):
@@ -108,7 +108,7 @@ class Ptera():
     self.hitbox = (self.x, self.y + 10, self.width, self.height - 12)
 
   def update(self):
-    self.image = self.flaps(int(self.count) % 2 )
+    self.image = self.flaps[int(self.count) % 2 ]
     self.count += 0.1
 
     self.x -= self.speed
@@ -296,7 +296,7 @@ def game():
       score = font.render("Score: " + str(score_value), True, (200, 200, 200))
       score_value += 0.25
       high_score_value = max(high_score_value, score_value)
-      high_score = font.render("High Score: " + str(high_score_value, True, (200, 200, 200)))
+      high_score = font.render("High Score: " + str(high_score_value), True, (200, 200, 200))
       screen.fill(grey)
 
       # Event Handling
@@ -327,6 +327,60 @@ def game():
       for obstacle in obstacles:
         if obstacle.is_cactus:
           obstacle.speed = ground.speed
+        elif obstacle.is_ptera:
+          obstacle.speed = ground.speed + 1
+
+        obstacle.update()
+        obstacle.draw(screen)
+
+      screen.blit(score, (550, 30))
+      screen.blit(high_score, (350, 30))
+
+      if time.time() - obstacle_start > minimum_time + random.randrange(0, 30) / 10:
+        obstacle_start = time.time()
+
+        if score_value > 500:
+          ptera_probability = random.random()
+          if ptera_probability > 0.5:
+            obstacles.append(Ptera())
+            obstacles[-1].speed = ground.speed + 1
+          else:
+            obstacles.append(Cactus())
+            obstacles[-1].speed = ground.speed
+        else:
+            obstacles.append(Cactus())
+            obstacles[-1].speed = ground.speed
+
+      if score_value > 0 and score_value % 100 == 0 and score_value % 3 == 0:
+        ground.speed += 0.25
+        for obstacle in obstacles:
+          if obstacle.is_cactus:
+            obstacle.speed = ground.speed
+          elif obstacle.is_ptera:
+            obstacle.speed = ground.speed + 1
+
+      if score_value > 1 and score_value % 100 == 0:
+        check_point.play()
+
+      if dino.hitbox.colliderect(obstacles[0].hitbox):
+        death_sound.play()
+        dead = True
+        screen.blit(game_over, (170, 70))
+        screen.blit(replay_button, (340, 100))
+
+      if obstacles[0].x < -30:
+        obstacles.pop(0)
+        if obstacles == []:
+          obstacles.append(Cactus())
+          obstacle_start = time.time()
+
+      pygame.display.update()
+
+      if dead:
+        del dino
+        del ground
+        del obstacles
+        running = False
 
 # Call the game function to start the game
 game()
