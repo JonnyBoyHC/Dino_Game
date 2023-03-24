@@ -82,7 +82,8 @@ class Dino():
 
   def draw(self, screen):
     screen.blit(self.image, (self.x, self.y))
-    pygame.draw.rect(screen, (255, 0, 0), self.hitbox, 2)
+    # # Drawing a RED rectangle around Dino
+    # pygame.draw.rect(screen, (255, 0, 0), self.hitbox, 2)
 
 class Ptera():
 
