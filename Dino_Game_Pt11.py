@@ -340,7 +340,7 @@ def game():
       if time.time() - obstacle_start > minimum_time + random.randrange(0, 30) / 10:
         obstacle_start = time.time()
 
-        if score_value > 500:
+        if score_value > 100:
           ptera_probability = random.random()
           if ptera_probability > 0.5:
             obstacles.append(Ptera())
